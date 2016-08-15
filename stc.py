@@ -29,9 +29,10 @@ NATURE=Character("Nature", "", inhumanForceArchetype )
 SOCIETY=Character("Society", "", inhumanForceArchetype )
 
 class Beat:
-	def __init__(self, beatnum, summary, conflict, d_mood, setting):
+	def __init__(self, beatnum, summary, conflict, d_mood, setting, archetype):
 		self.beatnum=beatnum
 		self.summary=summary
+		self.archetype=archetype
 		self.conflict=conflict
 		self.d_mood=d_mood
 		self.setting=setting
@@ -46,13 +47,51 @@ class Beat:
 		ax=""
 		for item in items:
 			ax+="<p>"
-			ax+=self.conflict[item["char"]].name().upper()+"<br>"
-			ax+=item["line"]+"<br>"
+			if("action" in item):
+				ax+="</center>"+self.fillTemplateLines(item["action"])+"<br><center>"
+			if("char" in item):
+				ax+=self.conflict[item["char"]].name().upper()+"<br>"
+				ax+=self.fillTemplateLines(item["line"])+"<br>"
 			ax+="</p>"
 		return ax
 	def createTemplatedLines(self):
 		# XXX template based on each archetype
-		return [{"char":0, "line":self.summary}, {"char":1, "line":str(self.d_mood)}]
+		if(NATURE in self.conflict or SOCIETY in self.conflict):
+			# single- or zero-character path
+			if(self.conflict[0]==NATURE or self.conflict[0]==SOCIETY):
+				if(self.conflict[1]==NATURE or self.conflict[1]==SOCIETY):
+					# zero-character path
+					return [{"action":random.choice(self.setting["names"])+" is "+random.choice(self.setting["qualities"])}]
+				else:
+					return [{"char":1, "line":self.summary+str(self.d_mood)}]
+			elif(self.conflict[1]==NATURE or self.conflict[1]==SOCIETY):
+				return [{"char":0, "line":self.summary+str(self.d_mood)}]
+		elif(self.conflict[0]==self.conflict[1]):
+			# XXX single character monologue
+			return [{"char":0, "line":self.summary+str(self.d_mood)}]
+		else:
+			if(self.archetype["names"][0] in normalSceneTemplates):
+				if(self.d_mood in normalSceneTemplates[self.archetype["names"][0]]):
+					return normalSceneTemplates[self.archetype["names"][0]][self.d_mood]
+			return [{"char":0, "line":self.summary}, {"char":1, "line":str(self.d_mood)}]
+	def fillTemplateLines(self, line):
+		ax=""
+		if(type(line)==type("str")):
+			return line
+		for element in line:
+			res=random.choice(element)
+			if(type(res)==type("str")):
+				ax+=res
+			else:
+				ax+=self.fillTemplateLines(res)
+		return ax
+
+normalSceneTemplates={}
+normalSceneTemplates["arrival"]={}
+normalSceneTemplates["arrival"][1]=[
+{ "char":0, "action":["Kicks ground","Whistles"], "line":[["Well, ",""], [["This ",["sucks", "looks lame"]], "What a promising arrival"]]},
+{ "char":1, "line":[["Give it a chance", "You might like it"]]}
+]
 
 beatnames={
 	"0": "Introductory Scene",
@@ -110,6 +149,7 @@ def beatSheet2HTML(title, beats, characters):
 	for act in beats:
 		for beat in act:
 			print(beat.createScene())
+	print("FADE OUT")
 	print("</body></html>")
 
 def setupArchetypes():
@@ -190,7 +230,7 @@ def genBeat(num, characters, d_mood=None, conflict=None):
 	if(len(event["qualities"])>0):
 		quality=random.choice(event["qualities"])
 	summary=" ".join([quality, random.choice(event["names"]), "of", conflict[1].name(), "by", conflict[0].name()])
-	return Beat(num, summary, conflict, d_mood, setting)
+	return Beat(num, summary, conflict, d_mood, setting, event)
 
 def genBeats(characters):
 	beats=[]
