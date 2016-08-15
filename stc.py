@@ -77,20 +77,21 @@ class Beat:
 			return [{"char":0, "line":self.summary}, {"char":1, "line":str(self.d_mood)}]
 	def fillTemplateLines(self, line):
 		ax=""
-		if(type(line)==type("str")):
+		if(type(line)==str):
 			return line
-		for element in line:
-			res=random.choice(element)
-			if(type(res)==type("str")):
-				ax+=res
-			else:
-				ax+=self.fillTemplateLines(res)
+		if(type(line)==type([])):
+			for el in line:
+				res=random.choice(el)
+				if(type(res)==str):
+					ax+=res
+				else:
+					ax+=self.fillTemplateLines(res)
 		return ax
 
 normalSceneTemplates={}
 normalSceneTemplates["arrival"]={}
 normalSceneTemplates["arrival"][1]=[
-{ "char":0, "action":["Kicks ground","Whistles"], "line":[["Well, ",""], [["This ",["sucks", "looks lame"]], "What a promising arrival"]]},
+{ "char":0, "action":[["Kicks ground","Whistles"]], "line":[["Well, ",""], [["This ",["sucks", "looks lame"]], "What a promising arrival"]]},
 { "char":1, "line":[["Give it a chance", "You might like it"]]}
 ]
 
