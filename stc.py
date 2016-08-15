@@ -38,7 +38,10 @@ class Beat:
 
 beatnames={
 	"0": "Introductory Scene",
+	"3": "State Theme",
+	"6": "Call to Action",
 	"9": "Break Into II",
+	"16": "Fun And Games",
 	"19": "Midpoint",
 	"26": "All Is Lost",
 	"29": "Break Into III",
@@ -64,7 +67,7 @@ def beatSheet2HTML(title, beats, characters):
 		print(" "+characters[i].occupation+" and "+random.choice(characters[i].archetype["names"]))
 		print("</li>")
 	print("</ul></p>")
-	print("<p><table>")
+	print("<p><table border=\"3\">")
 	for act in beats:
 		print("<tr>")
 		for beat in act:
