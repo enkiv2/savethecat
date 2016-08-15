@@ -63,7 +63,8 @@ def beatSheet2HTML(title, beats, characters):
 	for i in range(2, len(characters)):
 		print("<li>")
 		print("<b>"+characters[i].name()+"</b>: ")
-		print((" ".join(characters[i].archetype["qualities"])))
+		if(len(characters[i].archetype["qualities"])>0):
+			print((" "+random.choice(characters[i].archetype["qualities"])))
 		print(" "+characters[i].occupation+" and "+random.choice(characters[i].archetype["names"]))
 		print("</li>")
 	print("</ul></p>")
@@ -156,16 +157,18 @@ def genBeats(characters):
 			act.append(genBeat(actN*10+beatN, characters))
 		beats.append(act)
 	beats[0][0]=genBeat(0, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
-	beats[1][9]=genBeat(0, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
-	beats[2][7]=genBeat(0, characters, conflict=beats[1][9].conflict)
-	beats[2][9]=genBeat(0, characters, d_mood=(-1*beats[2][7].d_mood), conflict=beats[1][9].conflict)
+	beats[0][6]=genBeat(6, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
+	beats[0][9]=genBeat(9, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
+	beats[1][9]=genBeat(19, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
+	beats[2][7]=genBeat(27, characters, conflict=beats[1][9].conflict)
+	beats[2][9]=genBeat(29, characters, d_mood=(-1*beats[2][7].d_mood), conflict=beats[1][9].conflict)
 	beats[3][9]=genBeat(39, characters, d_mood=(-1*beats[0][0].d_mood), conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
 	return beats
 
 def main():
 	setupArchetypes()
 	
-	characters=genCharacters(10)
+	characters=genCharacters(4)
 	beats=genBeats(characters)
 	beatSheet2HTML("Title Goes Here", beats, characters)
 
