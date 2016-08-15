@@ -1,7 +1,7 @@
 # savethecat
 Generates a Blake Snyder Beat Sheet like those described in "Save the Cat!"
 
-We use several lists from dariusk/corpora: humans/firstNames.json, humans/lastNames.json, humans/occupations.json, archetypes/characters.json, & archetypes/events.json
+We use several lists from dariusk/corpora: humans/firstNames.json, humans/lastNames.json, humans/occupations.json, archetypes/characters.json, archetypes/events.json, & archetypes/settings.json
 
 The result is an HTML document containing a summary of the A- and B-plots, a dramatis personae, and a filled-in beat sheet.
 

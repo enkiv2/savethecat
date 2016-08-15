@@ -4,11 +4,12 @@ from names import *
 import archetypes
 from random import Random
 
-global random, archetypalChars, archetypalEvents, protagonist, protagonistArchetypes
+global random, archetypalChars, archetypalEvents, archetypalPlaces, protagonist, protagonistArchetypes
 
 random=Random()
 archetypalChars=[]
 archetypalEvents={}
+archetypalPlaces={}
 protagonist=None
 protagonistArchetypes=[]
 
@@ -28,13 +29,30 @@ NATURE=Character("Nature", "", inhumanForceArchetype )
 SOCIETY=Character("Society", "", inhumanForceArchetype )
 
 class Beat:
-	def __init__(self, beatnum, summary, conflict, d_mood):
+	def __init__(self, beatnum, summary, conflict, d_mood, setting):
 		self.beatnum=beatnum
 		self.summary=summary
 		self.conflict=conflict
 		self.d_mood=d_mood
+		self.setting=setting
 	def getConflict(self):
 		return " vs. ".join([self.conflict[0].name(), self.conflict[1].name()])
+	def createScene(self):
+		header=random.choice(["FADE IN<br>", ""])+random.choice(["INT", "EXT"])+" "+(" ".join([random.choice(self.setting["qualities"]), random.choice(self.setting["names"])]))
+		return "<p>"+header+"</p>"+"<center>"+self.genSceneDialogue()+"</center>"
+	def genSceneDialogue(self):
+		return self.createDialogueBlocks(self.createTemplatedLines())
+	def createDialogueBlocks(self, items):
+		ax=""
+		for item in items:
+			ax+="<p>"
+			ax+=self.conflict[item["char"]].name().upper()+"<br>"
+			ax+=item["line"]+"<br>"
+			ax+="</p>"
+		return ax
+	def createTemplatedLines(self):
+		# XXX template based on each archetype
+		return [{"char":0, "line":self.summary}, {"char":1, "line":str(self.d_mood)}]
 
 beatnames={
 	"0": "Introductory Scene",
@@ -85,6 +103,13 @@ def beatSheet2HTML(title, beats, characters):
 			print("</td>")
 		print("</tr>")
 	print("</table>")
+	print("</p>")
+	print("<h3>Screenplay</h3><br><center>")
+	print("<p>"+title.upper()+"</p>")
+	print("</center>")
+	for act in beats:
+		for beat in act:
+			print(beat.createScene())
 	print("</body></html>")
 
 def setupArchetypes():
@@ -92,6 +117,9 @@ def setupArchetypes():
 	archetypalEvents["good"]=[]
 	archetypalEvents["evil"]=[]
 	archetypalEvents["neutral"]=[]
+	archetypalPlaces["good"]=[]
+	archetypalPlaces["evil"]=[]
+	archetypalPlaces["neutral"]=[]
 	for c in archetypes.characters:
 		item={}
 		item["names"]=[c["name"]]
@@ -108,6 +136,13 @@ def setupArchetypes():
 		item["qualities"]=e["qualities"]
 		item["nature"]=e["nature"]
 		archetypalEvents[e["nature"]].append(item)
+	for e in archetypes.settings:
+		item={}
+		item["names"]=[e["name"]]
+		item["names"].extend(e["synonyms"])
+		item["qualities"]=e["qualities"]
+		item["nature"]=e["nature"]
+		archetypalPlaces[e["nature"]].append(item)
 	
 def genCharacter():
 	ch=Character(random.choice(firstNames), random.choice(lastNames), random.choice(archetypalChars))
@@ -133,21 +168,29 @@ def genBeat(num, characters, d_mood=None, conflict=None):
 		if(conflict[1].archetype["nature"]=="good" and conflict[0].archetype["nature"]=="evil"):
 			d_mood=-1
 	event={}
+	setting={}
 	if(d_mood>0):
 		pool=[]
 		pool.extend(archetypalEvents["good"])
 		pool.extend(archetypalEvents["neutral"])
 		event=random.choice(pool)
+		pool=[]
+		pool.extend(archetypalPlaces["good"])
+		pool.extend(archetypalPlaces["neutral"])
+		setting=random.choice(pool)
 	else:
 		pool=[]
 		pool.extend(archetypalEvents["evil"])
 		pool.extend(archetypalEvents["neutral"])
 		event=random.choice(pool)
+		pool.extend(archetypalPlaces["evil"])
+		pool.extend(archetypalPlaces["neutral"])
+		setting=random.choice(pool)
 	quality=""
 	if(len(event["qualities"])>0):
 		quality=random.choice(event["qualities"])
 	summary=" ".join([quality, random.choice(event["names"]), "of", conflict[1].name(), "by", conflict[0].name()])
-	return Beat(num, summary, conflict, d_mood)
+	return Beat(num, summary, conflict, d_mood, setting)
 
 def genBeats(characters):
 	beats=[]
