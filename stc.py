@@ -73,7 +73,7 @@ class Beat:
 		else:
 			if(self.archetype["names"][0] in normalSceneTemplates):
 				if(self.d_mood in normalSceneTemplates[self.archetype["names"][0]]):
-					return normalSceneTemplates[self.archetype["names"][0]][self.d_mood]
+					return random.choice(normalSceneTemplates[self.archetype["names"][0]][self.d_mood])
 			return [{"char":0, "line":self.summary}, {"char":1, "line":str(self.d_mood)}]
 	def fillTemplateLines(self, line):
 		ax=""
@@ -91,8 +91,10 @@ class Beat:
 normalSceneTemplates={}
 normalSceneTemplates["arrival"]={}
 normalSceneTemplates["arrival"][1]=[
-{ "char":0, "action":[["Kicks ground","Whistles"]], "line":[["Well, ",""], [["This ",["sucks", "looks lame"]], "What a promising arrival"]]},
-{ "char":1, "line":[["Give it a chance", "You might like it"]]}
+	[
+		{ "char":0, "action":[["Kicks ground","Whistles"]], "line":[["Well, ",""], [["This ",["sucks", "looks lame"]], "What a promising arrival"]]},
+		{ "char":1, "line":[["Give it a chance", "You might like it"]]}
+	]
 ]
 
 beatnames={
