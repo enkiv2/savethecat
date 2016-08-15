@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from names import *
 import archetypes
 from random import Random
@@ -126,9 +127,13 @@ def beatSheet2HTML(title, beats, characters):
 		print("</li>")
 	print("</ul></p>")
 	print("<p><table border=\"3\">")
+	moodArr=[]
+	last=0
 	for act in beats:
 		print("<tr>")
 		for beat in act:
+			last+=beat.d_mood
+			moodArr.append(str(last))
 			print("<td>")
 			
 			print("<b>")
@@ -143,8 +148,11 @@ def beatSheet2HTML(title, beats, characters):
 		print("</tr>")
 	print("</table>")
 	print("</p>")
+	os.system("echo \""+(" ".join(moodArr))+"\" |graph -Tpng -X Beats -Y Happiness --auto-abscissa > story-shape.png")
+	print("<p><img src=\"story-shape.png\"></p>")
 	print("<h3>Screenplay</h3><br><center>")
 	print("<p>"+title.upper()+"</p>")
+	print("<p>An original screenplay by <a href=\"http://github.com/enkiv2/savethecat\">SaveTheCat</a></p>")
 	print("</center>")
 	for act in beats:
 		for beat in act:
