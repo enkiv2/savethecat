@@ -98,15 +98,15 @@ normalSceneTemplates["arrival"][1]=[
 ]
 
 beatnames={
-	"0": "Introductory Scene",
-	"3": "State Theme",
-	"6": "Call to Action",
+	"0": "Opening Image",
+	"2": "Theme Stated",
+	"3": "Catalyst",
 	"9": "Break Into II",
-	"16": "Fun And Games",
+	"11": "Fun And Games",
 	"19": "Midpoint",
-	"26": "All Is Lost",
+	"25": "All Is Lost",
 	"29": "Break Into III",
-	"39": "Final Scene"
+	"39": "Final Image"
 }
 
 def beatSheet2HTML(title, beats, characters):
@@ -117,7 +117,7 @@ def beatSheet2HTML(title, beats, characters):
 	print("<body>")
 	print("<h1>"+title+"</h1><br>")
 	print("<h3>Plots</h3><br>")
-	print("<p><b>A-plot:</b> "+beats[0][0].summary+". "+beats[1][9].summary+", but "+beats[2][9].summary+"</p><br>")
+	print("<p><b>A-plot:</b> "+beats[0][0].summary+". "+beats[0][3].summary+", but "+beats[2][9].summary+"</p><br>")
 	print("<p><b>B-plot:</b> "+beats[1][0].summary+". "+beats[1][5].summary+", but "+beats[2][5].summary+"</p><br>")
 	print("<p><h3>Dramatis Personae</h3><br>")
 	print("<ul>")
@@ -251,10 +251,10 @@ def genBeats(characters):
 			act.append(genBeat(actN*10+beatN, characters))
 		beats.append(act)
 	beats[0][0]=genBeat(0, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
-	beats[0][6]=genBeat(6, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
-	beats[0][9]=genBeat(9, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
+	beats[0][2]=genBeat(2, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
+	beats[0][3]=genBeat(3, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
 	beats[1][9]=genBeat(19, characters, conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
-	beats[2][7]=genBeat(27, characters, conflict=beats[1][9].conflict)
+	beats[2][5]=genBeat(27, characters, conflict=beats[1][9].conflict)
 	beats[2][9]=genBeat(29, characters, d_mood=(-1*beats[2][7].d_mood), conflict=beats[1][9].conflict)
 	beats[3][9]=genBeat(39, characters, d_mood=(-1*beats[0][0].d_mood), conflict=random.choice([[protagonist, random.choice(characters)], [random.choice(characters), protagonist]]))
 	return beats
