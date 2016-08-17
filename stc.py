@@ -49,7 +49,11 @@ class Beat:
 		for item in items:
 			ax+="<p>"
 			if("action" in item):
-				ax+="</center>"+self.fillTemplateLines(item["action"])+"<br><center>"
+				ax+="</center>"
+				if("char" in item):
+					ax+=self.conflict[item["char"]].name().upper()+" "
+				ax+=self.fillTemplateLines(item["action"])
+				ax+="<br><center>"
 			if("char" in item):
 				ax+=self.conflict[item["char"]].name().upper()+"<br>"
 				ax+=self.fillTemplateLines(item["line"])+"<br>"
@@ -92,7 +96,7 @@ normalSceneTemplates={}
 normalSceneTemplates["arrival"]={}
 normalSceneTemplates["arrival"][1]=[
 	[
-		{ "char":0, "action":[["Kicks ground","Whistles"]], "line":[["Well, ",""], [["This ",["sucks", "looks lame"]], "What a promising arrival"]]},
+		{ "char":0, "action":[["kicks the ground","whistles"]], "line":[["Well, ",""], [["This ",["sucks", "looks lame"]], "What a promising arrival"]]},
 		{ "char":1, "line":[["Give it a chance", "You might like it"]]}
 	]
 ]
@@ -155,7 +159,7 @@ def beatSheet2HTML(title, beats, characters):
 	print("<p><img src=\"story-shape.png\"></p>")
 	print("<h3>Screenplay</h3><br><center>")
 	print("<p>"+title.upper()+"</p>")
-	print("<p>An original screenplay by <a href=\"http://github.com/enkiv2/savethecat\">SaveTheCat</a></p>")
+	print("<p>An original screenplay by <a href=\"http://github.com/enkiv2/savethecat\">Alan I. Synthee</a></p>")
 	print("</center>")
 	for act in beats:
 		for beat in act:
